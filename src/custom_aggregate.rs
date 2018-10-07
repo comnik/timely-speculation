@@ -1,5 +1,6 @@
 extern crate timely;
 
+use std::fmt::Debug;
 use std::hash::Hash;
 use std::collections::HashMap;
 
@@ -9,9 +10,9 @@ use timely::dataflow::operators::{Notificator, FrontierNotificator};
 use timely::dataflow::operators::generic::operator::Operator;
 use timely::dataflow::channels::pact::Exchange;
 
-pub trait CustomAggregate<S: Scope, K: ExchangeData+Hash, V: ExchangeData> {
+pub trait CustomAggregate<S: Scope, K: Debug+ExchangeData+Hash, V: Debug+ExchangeData> {
 
-    fn aggregate_speculative<R: Data, D: Default+Clone+'static, F: Fn(&K, V, &mut D)+'static, E: Fn(K, D)->R+'static, H: Fn(&K)->u64+'static>(
+    fn aggregate_speculative<R: Data, D: Default+Clone+Debug+'static, F: Fn(&K, V, &mut D)+'static, E: Fn(K, D)->R+'static, H: Fn(&K)->u64+'static>(
         &self,
         spec: &Stream<S, ()>,
         fold: F,
@@ -19,9 +20,9 @@ pub trait CustomAggregate<S: Scope, K: ExchangeData+Hash, V: ExchangeData> {
         hash: H) -> Stream<S, R> where S::Timestamp: Eq;
 }
 
-impl<S: Scope, K: ExchangeData+Hash+Eq, V: ExchangeData> CustomAggregate<S, K, V> for Stream<S, (K, V)> {
+impl<S: Scope, K: Debug+ExchangeData+Hash+Eq, V: Debug+ExchangeData> CustomAggregate<S, K, V> for Stream<S, (K, V)> {
 
-    fn aggregate_speculative<R: Data, D: Default+Clone+'static, F: Fn(&K, V, &mut D)+'static, E: Fn(K, D)->R+'static, H: Fn(&K)->u64+'static>(
+    fn aggregate_speculative<R: Data, D: Default+Clone+Debug+'static, F: Fn(&K, V, &mut D)+'static, E: Fn(K, D)->R+'static, H: Fn(&K)->u64+'static>(
         &self,
         spec: &Stream<S, ()>,
         fold: F,
