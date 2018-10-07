@@ -1,5 +1,3 @@
-//! https://www.youtube.com/watch?v=3UfZN59Nsk8
-
 extern crate timely;
 
 use std::time;
@@ -80,7 +78,7 @@ fn main () {
                         spec.advance_to(*window);
 
                         // ideally, we would never see late arrivals
-                        // cap = cap.delayed(&RootTimestamp::new(event_time + 1));
+                        // cap = cap.delayed(&RootTimestamp::new(*window));
                     }
                 }
                 windows.retain(|t| spec.time().inner <= *t);
